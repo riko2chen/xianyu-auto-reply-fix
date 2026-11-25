@@ -7571,7 +7571,8 @@ class XianyuLive:
             # 【消息接收检查】检查是否在消息接收后的冷却时间内，与 cookie_refresh_loop 保持一致
             current_time = time.time()
             time_since_last_message = current_time - self.last_message_received_time
-            if self.last_message_received_time > 0 and time_since_last_message < self.message_cookie_refresh_cooldown:
+            # OpenXPlay patch: with no token at all (cleared after a WebSocket drop) the cooldown would keep the shop offline
+            if self.current_token and self.last_message_received_time > 0 and time_since_last_message < self.message_cookie_refresh_cooldown:
                 remaining_time = self.message_cookie_refresh_cooldown - time_since_last_message
                 remaining_minutes = int(remaining_time // 60)
                 remaining_seconds = int(remaining_time % 60)
